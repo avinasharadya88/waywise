@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>waywise | Intelligent Day-Wise Itineraries & Sights</title>
+  <link rel="icon" type="image/x-icon" href="https://a0.muscache.com/airbnb/static/icons/android-icon-192x192-c0465f9f0380893768972a31a614b670.png">
+  <link rel="stylesheet" href="css/airbnb.css">
+</head>
+<body>
+
+  <!-- ======================================================================
+       1. GLOBAL STICKY HEADER
+       ====================================================================== -->
+  <header class="site-header">
+    <div class="header-container">
+      
+      <!-- Brand Name: waywise -->
+      <a href="#" class="brand-link" id="brandLogo">
+        <div class="brand-icon-box">
+          <!-- Travel Compass / Map Pin Icon -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor"></polygon>
+          </svg>
+        </div>
+        <span>waywise</span>
+      </a>
+
+      <!-- Compact Search & Plan Pill -->
+      <div class="search-pill-wrapper" id="compactPill">
+        <button class="search-pill-button" id="pillDestBtn">
+          <span>📍</span>
+          <span id="pillDestVal">Paris, France</span>
+        </button>
+        <div class="search-divider"></div>
+        <button class="search-pill-button" id="pillDatesBtn">
+          <span>📅</span>
+          <span id="pillDatesVal">3 Days (Nov 14–16)</span>
+        </button>
+        <div class="search-divider"></div>
+        <button class="search-pill-button secondary" id="pillBudgetBtn">
+          <span>💰</span>
+          <span id="pillBudgetVal">Budget: $450</span>
+        </button>
+        <div class="search-icon-circle">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polygon points="5 3 19 12 5 21 5 3" fill="currentColor"></polygon>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Header Actions: Currency Selector -->
+      <div class="header-actions">
+        <label for="currencySelect" style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Currency:</label>
+        <select class="currency-select-box" id="currencySelect">
+          <option value="USD" selected>USD ($)</option>
+          <option value="INR">INR (₹)</option>
+          <option value="EUR">EUR (€)</option>
+          <option value="GBP">GBP (£)</option>
+          <option value="JPY">JPY (¥)</option>
+        </select>
+        <button class="generate-trip-btn" id="togglePanelBtn" style="padding: 8px 18px; font-size: 13px;">
+          <span>⚙️ Adjust Trip</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ====================================================================
+         2. EXPANDED TRIP CONSTRAINTS PANEL (Form for Destination, Dates, Budget, etc.)
+         ==================================================================== -->
+    <div class="planner-panel open" id="plannerPanel">
+      <div class="planner-form-container">
+        
+        <!-- Core Constraints Form Grid -->
+        <div class="form-grid">
+          <!-- Destination Field -->
+          <div class="form-field-card">
+            <label class="field-label" for="destInput">Destination</label>
+            <select class="field-select" id="destInput">
+              <option value="Paris">Paris, France</option>
+              <option value="Tokyo">Tokyo, Japan</option>
+              <option value="Bali">Bali, Indonesia</option>
+              <option value="Rome">Rome, Italy</option>
+            </select>
+          </div>
+
+          <!-- Start Date (YYYY-MM-DD) -->
+          <div class="form-field-card">
+            <label class="field-label" for="startDateInput">Start Date (YYYY-MM-DD)</label>
+            <input type="date" class="field-input" id="startDateInput" value="2026-11-14">
+          </div>
+
+          <!-- End Date (YYYY-MM-DD) -->
+          <div class="form-field-card">
+            <label class="field-label" for="endDateInput">End Date (YYYY-MM-DD)</label>
+            <input type="date" class="field-input" id="endDateInput" value="2026-11-16">
+          </div>
+
+          <!-- Total Budget -->
+          <div class="form-field-card">
+            <label class="field-label" for="budgetInput">Total Budget (<span class="currency-symbol">$</span>)</label>
+            <input type="number" class="field-input" id="budgetInput" value="450" min="1" step="10">
+          </div>
+        </div>
+
+        <!-- Secondary Preferences: Interests & Travel Pacing Style -->
+        <div class="form-row-secondary">
+          <!-- Traveler Interests -->
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <span style="font-size: 13px; font-weight: 700; color: var(--text-main);">Interests:</span>
+            <div class="interests-selector-group" id="interestsGroup">
+              <span class="interest-tag-pill active" data-interest="Culture">🏛️ Culture & History</span>
+              <span class="interest-tag-pill active" data-interest="Food">🥐 Food & Dining</span>
+              <span class="interest-tag-pill active" data-interest="Adventure">⛰️ Adventure & Outdoors</span>
+              <span class="interest-tag-pill" data-interest="Relaxation">🌿 Relaxation & Leisure</span>
+            </div>
+          </div>
+
+          <!-- Travel Preferences / Pacing (Relaxed, Standard, Active) -->
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 13px; font-weight: 700; color: var(--text-main);">Pacing:</span>
+            <div class="travel-style-group" id="styleGroup">
+              <button class="style-chip-btn" data-style="Relaxed" title="1-2 activities/day (Relaxed evening)">Relaxed</button>
+              <button class="style-chip-btn active" data-style="Standard" title="2-3 activities/day (Balanced)">Standard</button>
+              <button class="style-chip-btn" data-style="Active" title="3 activities/day (Full schedule)">Active</button>
+            </div>
+          </div>
+
+          <!-- Generate Itinerary Action -->
+          <button class="generate-trip-btn" id="generateTripBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="currentColor"></polygon>
+            </svg>
+            <span>Generate Itinerary</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       3. FINANCIAL STATUS RIBBON & BUDGET TRACKER (Persistent & Reactive)
+       ====================================================================== -->
+  <section class="budget-status-ribbon">
+    <div class="ribbon-container">
+      
+      <!-- Budget Health Badge -->
+      <div class="budget-health-pill within" id="budgetHealthPill">
+        <span id="healthIcon">✓</span>
+        <span id="healthText">Within Budget (Remaining: $65)</span>
+      </div>
+
+      <!-- Financial Metrics Breakdown -->
+      <div class="ribbon-metrics">
+        <div class="metric-item">
+          <span class="metric-label">Estimated Total:</span>
+          <span class="metric-val" id="metricTotalCost">$385</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label">Activities:</span>
+          <span class="metric-val" id="metricActivityCost">$220</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label">Meals & Transit:</span>
+          <span class="metric-val" id="metricAssumptionsCost">$165</span>
+        </div>
+
+        <!-- Live Quick Budget Adjuster -->
+        <div class="metric-item">
+          <span class="metric-label">Your Budget:</span>
+          <div class="quick-budget-edit">
+            <span class="currency-symbol">$</span>
+            <input type="number" class="quick-budget-input" id="quickBudgetInput" value="450">
+          </div>
+        </div>
+
+        <!-- Clearly Stated Assumptions Note -->
+        <div class="stated-assumptions-tag" title="Transparent assumptions based on typical travel cost baselines">
+          💡 Stated Assumptions: Meals <span id="assumpMealsVal">$40</span>/day + Local Transit <span id="assumpTransitVal">$15</span>/day
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       4. VIEW TABS BAR (Itinerary vs Places to See vs Where to Stay vs Map)
+       ====================================================================== -->
+  <nav class="view-tabs-bar">
+    <div class="view-tabs-container">
+      <button class="tab-btn active" data-tab="itinerary">
+        <span>📅 Day-Wise Itinerary</span>
+        <span class="tab-badge" id="tabItineraryDays">3 Days</span>
+      </button>
+      <button class="tab-btn" data-tab="places">
+        <span>🏛️ Things to Visit & Sights</span>
+        <span class="tab-badge" id="tabPlacesCount">9 Sights</span>
+      </button>
+      <button class="tab-btn" data-tab="stays">
+        <span>🏡 Where to Stay</span>
+        <span class="tab-badge" id="tabStaysCount">2 Stays</span>
+      </button>
+      <button class="tab-btn" data-tab="map">
+        <span>🗺️ Interactive Map</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ======================================================================
+       5. MAIN CONTENT AREA
+       ====================================================================== -->
+  <main class="main-content">
+    
+    <!-- Tab 1: Day-Wise Itinerary (Core MVP Planner with Swap/Replace controls) -->
+    <section id="viewItinerary" class="itinerary-view-section">
+      <!-- Injected by app.js -->
+    </section>
+
+    <!-- Tab 2: Things to Visit & Sights in this locality -->
+    <section id="viewPlaces" style="display: none;">
+      <div style="margin-bottom: 24px;">
+        <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 6px;">Things to Visit & Experiences in <span id="sightsCityName">Paris</span></h2>
+        <p style="color: var(--text-muted); font-size: 15px;">Curated landmarks, cultural monuments, culinary discoveries, and viewpoints in this locality.</p>
+      </div>
+      <div class="places-grid" id="placesGrid">
+        <!-- Injected by app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 3: Where to Stay (Handpicked stays for this destination) -->
+    <section id="viewStays" style="display: none;">
+      <div style="margin-bottom: 24px;">
+        <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 6px;">Handpicked Stays in <span id="staysCityName">Paris</span></h2>
+        <p style="color: var(--text-muted); font-size: 15px;">Recommended boutique stays, apartments, and villas matching your destination.</p>
+      </div>
+      <div class="stays-grid" id="staysGrid">
+        <!-- Injected by app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Interactive Map View -->
+    <section id="viewMap" style="display: none;">
+      <div style="margin-bottom: 16px;">
+        <h2 style="font-size: 22px; font-weight: 800;">Interactive Locality Map</h2>
+        <p style="color: var(--text-muted); font-size: 14px;">Click any marker to inspect attractions, time slots, and activities.</p>
+      </div>
+      <div class="map-view-box" id="mapBox">
+        <div id="mapPinsLayer" style="position: relative; width: 100%; height: 100%;">
+          <!-- Rendered Pins -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================================
+       6. INTERACTIVE ACTIVITY REPLACEMENT (SWAP) MODAL
+       ====================================================================== -->
+  <div class="modal-overlay" id="swapModalOverlay">
+    <div class="swap-modal-container">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Replace Activity</div>
+          <div style="font-size: 12px; color: var(--text-muted);" id="swapModalSubtitle">
+            Select a replacement for Day 1 (Morning)
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeSwapModalBtn">✕</button>
+      </div>
+      
+      <div class="swap-list-body" id="swapCandidatesList">
+        <!-- Rendered replacement options -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       7. ITEM DETAIL MODAL
+       ====================================================================== -->
+  <div class="modal-overlay" id="detailModalOverlay">
+    <div class="detail-modal-container" id="detailModalContainer">
+      <!-- Populated on click -->
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       8. GLOBAL FOOTER
+       ====================================================================== -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <strong>waywise</strong> · Intelligent Itineraries, Sightseeing & Stays
+      </div>
+      <div>
+        <span>Transparent Costing · Deterministic Planning · Zero Guesswork</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
